@@ -14,3 +14,4 @@
 - [@douglasneuroinformatics/libui](https://github.com/DouglasNeuroInformatics/libui): Generic UI components for DNP projects, built using React and Tailwind CSS 
 - [@douglasneuroinformatics/prettier-config](https://github.com/DouglasNeuroInformatics/prettier-config): Prettier configuration for DNP projects 
 - [@douglasneuroinformatics/semantic-release](https://github.com/DouglasNeuroInformatics/semantic-release): Semantic release configuration and workflows for DNP projects
+- [@douglasneuroinformatics/tsconfig](https://github.com/DouglasNeuroInformatics/tsconfig): Shared TypeScript configuration for DNP projects
