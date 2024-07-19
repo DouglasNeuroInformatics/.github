@@ -12,5 +12,5 @@
 - [@douglasneuroinformatics/libnest](https://github.com/DouglasNeuroInformatics/libnest): Generic NestJS decorators, pipes, modules, and utilities used across DNP projects
 - [@douglasneuroinformatics/libui-form-types](https://github.com/DouglasNeuroInformatics/libui-form-types): Type declarations for a declarative form system
 - [@douglasneuroinformatics/libui](https://github.com/DouglasNeuroInformatics/libui): Generic UI components for DNP projects, built using React and Tailwind CSS 
-- [@douglasneuroinformatics/prettier-config](@douglasneuroinformatics/prettier-config): Prettier configuration for DNP projects 
+- [@douglasneuroinformatics/prettier-config](https://github.com/DouglasNeuroInformatics/prettier-config): Prettier configuration for DNP projects 
 - [@douglasneuroinformatics/semantic-release](https://github.com/DouglasNeuroInformatics/semantic-release): Semantic release configuration and workflows for DNP projects
