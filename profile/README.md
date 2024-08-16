@@ -7,7 +7,8 @@
 ### NPM Packages
 - [@douglasneuroinformatics/esbuild-plugin-native-modules](https://github.com/DouglasNeuroInformatics/esbuild-plugin-native-modules): An esbuild plugin to enable loading native node modules 
 - [@douglasneuroinformatics/esbuild-plugin-prisma](https://github.com/DouglasNeuroInformatics/esbuild-plugin-prisma): An esbuild plugin to bundle prisma binaries
-- [@douglasneuroinformatics/eslint-config](https://github.com/DouglasNeuroInformatics/eslint-config): Shared linting configurations for DNP projects written in TypeScript/JavaScript 
+- [@douglasneuroinformatics/eslint-config](https://github.com/DouglasNeuroInformatics/eslint-config): Shared linting configurations for DNP projects written in TypeScript/JavaScript
+- [@douglasneuroinformatics/libcrypto](https://github.com/DouglasNeuroInformatics/libcrypto): Wrappers for the Web Crypto API 
 - [@douglasneuroinformatics/libjs](https://github.com/DouglasNeuroInformatics/libjs): A collection of utility functions and types for Node.js and the browser
 - [@douglasneuroinformatics/libnest](https://github.com/DouglasNeuroInformatics/libnest): Generic NestJS decorators, pipes, modules, and utilities used across DNP projects
 - [@douglasneuroinformatics/libui-form-types](https://github.com/DouglasNeuroInformatics/libui-form-types): Type declarations for a declarative form system
