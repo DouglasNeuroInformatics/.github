@@ -12,6 +12,7 @@
 - [@douglasneuroinformatics/libjs](https://github.com/DouglasNeuroInformatics/libjs): A collection of utility functions and types for Node.js and the browser
 - [@douglasneuroinformatics/libnest](https://github.com/DouglasNeuroInformatics/libnest): Generic NestJS decorators, pipes, modules, and utilities used across DNP projects
 - [@douglasneuroinformatics/libpasswd](https://github.com/DouglasNeuroInformatics/libpasswd): A library for estimating the strength of passwords
+- [@douglasneuroinformatics/libstats](https://github.com/DouglasNeuroInformatics/libstats): Basic statistics for Node.js, written in Rust
 - [@douglasneuroinformatics/libui-form-types](https://github.com/DouglasNeuroInformatics/libui-form-types): Type declarations for a declarative form system
 - [@douglasneuroinformatics/libui](https://github.com/DouglasNeuroInformatics/libui): Generic UI components for DNP projects, built using React and Tailwind CSS
 - [@douglasneuroinformatics/prettier-config](https://github.com/DouglasNeuroInformatics/prettier-config): Prettier configuration for DNP projects 
