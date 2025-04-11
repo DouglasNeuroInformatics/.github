@@ -4,5 +4,5 @@
     "allowJs": true,
     "checkJs": true
   },
-  "include": ["scripts/*", "eslint.config.js", "prettier.config.js"]
+  "include": ["lib/*", "eslint.config.js", "prettier.config.js"]
 }
