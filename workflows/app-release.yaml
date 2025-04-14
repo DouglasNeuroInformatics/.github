@@ -10,6 +10,13 @@ on:
         description: 'the comma delineated names of the packages to publish'
         required: true
         type: 'string'
+      validate_command:
+        description: 'a command to run before build'
+        required: true
+        type: 'string'
+    secrets:
+      GITHUB_TOKEN:
+        required: true
 defaults:
   run:
     shell: bash
@@ -48,76 +55,74 @@ jobs:
             const org = '${{ inputs.org }}';
             const packages = '${{ inputs.packages }}';
             return await main({ context, core, github, exec, glob, io, inputs: { org, packages } });
+  validate:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.validate_command }}
+    steps:
+      - name: Act Workaround # https://github.com/nektos/act/issues/973
+        if: ${{ env.ACT }}
+        run: echo /opt/acttoolcache/node/20.19.0/x64/bin >> $GITHUB_PATH
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          cache: ${{ !env.ACT && 'pnpm' || ''  }}
+          node-version-file: '.nvmrc'
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate
+        run: ${{ inputs.validate_command }}
   build:
     runs-on: ubuntu-latest
-    needs: [configure]
-    if: ${{ needs.configure.outputs.result }}
+    needs: [configure, validate]
+    if: ${{ needs.configure.outputs.result != 'null' }}
     strategy:
       fail-fast: true
-      matrix: ${{ fromJSON(needs.configure.outputs.result) }}
+      matrix: ${{ fromJSON(needs.configure.outputs.result).buildMatrix }}
     steps:
-      - run: echo "Matrix - Dockerfile ${{ matrix.dockerfile }}, Image ${{ matrix.image }}"
-      # - name: Print matrix item
-      #   run: echo "${{ matrix.item }}"
-
-  # build:
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       include:
-  #         - dockerfile: ./apps/api/Dockerfile
-  #           image: ghcr.io/douglasneuroinformatics/open-data-capture-api
-  #         - dockerfile: ./apps/gateway/Dockerfile
-  #           image: ghcr.io/douglasneuroinformatics/open-data-capture-gateway
-  #         - dockerfile: ./apps/web/Dockerfile
-  #           image: ghcr.io/douglasneuroinformatics/open-data-capture-web
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
-  #     - name: Setup Environment
-  #       run: ./scripts/generate-env.sh
-  #     - name: Set Up QEMU
-  #       uses: docker/setup-qemu-action@v3
-  #     - name: Set Up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
-  #     - name: Login to Container Registry
-  #       if: ${{ needs.configure.outputs.is_release }}
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.repository_owner }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #     - name: Extract Metadata for Docker
-  #       id: meta
-  #       uses: docker/metadata-action@v5
-  #       with:
-  #         images: ${{ matrix.image }}
-  #         tags: |
-  #           type=raw,value=latest
-  #           type=raw,value=${{ needs.configure.outputs.current_version }}
-  #     - name: Build and Push Docker Images
-  #       uses: docker/build-push-action@v6
-  #       with:
-  #         build-args: |
-  #           RELEASE_VERSION=${{ needs.configure.outputs.current_version }}
-  #         context: .
-  #         file: ${{ matrix.dockerfile }}
-  #         push: ${{ needs.configure.outputs.is_release }}
-  #         platforms: linux/amd64,linux/arm64
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  # release:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - build
-  #     - configure
-  #   permissions:
-  #     contents: write
-  #   if: ${{ needs.configure.outputs.is_release }}
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
-  #     - name: Create Release
-  #       uses: softprops/action-gh-release@v2
-  #       with:
-  #         tag_name: v${{ needs.configure.outputs.current_version }}
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set Up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ inputs.org }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ fromJSON(needs.configure.outputs.result).currentVersion }}
+      - name: Build and Push Docker Images
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - configure
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ fromJSON(needs.configure.outputs.result).currentVersion }}
